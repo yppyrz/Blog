@@ -1,4 +1,6 @@
 using Blog.Entities;
+using Blog.Repositories;
+using Blog.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,8 +27,21 @@ namespace Blog
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddControllersWithViews();
+            services.AddRazorPages();
+            services.AddSession();
 
+            services.AddScoped<PostRepository>();
+            services.AddScoped<CategoryRepository>();
+            services.AddScoped<CommentRepository>();
+            services.AddScoped<TagRepository>();
+
+
+            services.AddTransient<PostService>();
+            services.AddTransient<CategoryService>();
+            services.AddTransient<CommentService>();
+            services.AddTransient<TagService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +50,7 @@ namespace Blog
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
             }
             else
             {
@@ -48,6 +64,7 @@ namespace Blog
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
